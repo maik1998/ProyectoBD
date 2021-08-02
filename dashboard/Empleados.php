@@ -5,18 +5,6 @@ if ($_SESSION["s_usuario"] === null) {
 }
 require_once '../vistas/cabecera.php';
 ?>
-
-<?php
-include_once '../bd/conexion.php';
-$objeto = new Conexion();
-$conexion = $objeto->Conectar();
-
-$consulta = "SELECT * FROM empleados";
-$resultado = $conexion->prepare($consulta);
-$resultado->execute();
-$data = $resultado->fetchAll(PDO::FETCH_ASSOC);
-?>
-
 <main class="h-full overflow-y-auto">
   <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
@@ -488,136 +476,22 @@ $data = $resultado->fetchAll(PDO::FETCH_ASSOC);
     </h4>
     <div class="w-full overflow-hidden rounded-lg shadow-xs">
       <div class="w-full overflow-x-auto">
-        <table id="tableEmpleado" class="w-full whitespace-no-wrap">
+        <table class="w-full whitespace-no-wrap">
           <thead>
             <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-              <th class="px-4 py-3">Cedula</th>
-              <th class="px-4 py-3">Nombre</th>
-              <th class="px-4 py-3">Apellido</th>
-              <th class="px-4 py-3">fecha Nacimiento</th>
-              <th class="px-4 py-3">tipo Usuario</th>
-              <th class="px-4 py-3">Empresa</th>
-              <th class="px-4 py-3">Area Comun</th>
-              <th class="px-4 py-3">Cargo</th>
-              <th class="px-4 py-3">Acciones</th>
+              <th class="px-4 py-3">Client</th>
+              <th class="px-4 py-3">Amount</th>
+              <th class="px-4 py-3">Status</th>
+              <th class="px-4 py-3">Date</th>
+              <th class="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-            <?php
-            foreach ($data as $dat) {
-            ?>
-              <tr class="text-gray-700 dark:text-gray-400">
-                <div class="flex items-center text-sm-center">
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['idEmpleado'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['nombre'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['apellido'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['fechaNacimiento'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['tipoUsuario'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['idEmpresa'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['codigoAreaComun'] ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo $dat['codigoCargo'] ?></td>
-                  <td class="px-4 py-3">
-                    <div class="flex items-center space-x-4 text-sm">
-                      <button id="btnModificar" @click="openModal" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
-                        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                        </svg>
-                      </button>
-                      <button id="btnBorrar" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Delete">
-                        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </div>
-              </tr>
-            <?php
-            }
-            ?>
           </tbody>
 
         </table>
       </div>
 
     </div>
-
-    <!-- Ventana Modal backdrop. This what you want to place close to the closing body tag -->
-    <div id="modalCRUD" style="display:none" x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center">
-      <!-- Modal -->
-      <div x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 transform translate-y-1/2" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0  transform translate-y-1/2" @click.away="closeModal" @keydown.escape="closeModal" class="w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-xl" role="dialog" id="modal">
-        <!-- Remove header if you don't want a close icon. Use modal body to place modal tile. -->
-        <div class="inline-flex items-center">
-          <p class="mb-2 text-lg font-bold text-gray-900 dark:text-gray-300">
-          <h3 class="modal-title"></h3>
-          </p>
-          <header class="flex justify-end">
-            <button class="inline-flex items-center justify-center w-6 h-6 text-gray-400 transition-colors duration-150 rounded dark:hover:text-gray-200 hover: hover:text-gray-700" aria-label="close" @click="closeModal">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" role="img" aria-hidden="true">
-                <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path>
-              </svg>
-            </button>
-          </header>
-          </div>
-        <!-- Modal body -->
-        <div class="mt-4 mb-6">
-          <!-- Modal title -->
-
-          <!-- Modal description -->
-          <form id="formEmpleados">
-            <div class="modal-body">
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">Nombre </span>
-                  <input type="text" id="nombre" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">apellido </span>
-                  <input type="text" id="apellido" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">fecha Nacimiento</span>
-                  <input type="date" id="fechaNacimiento" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">tipo Usuario</span>
-                  <input type="text" id="tipoUsuario" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">idEmpresa</span>
-                  <input type="text" id="idEmpresa" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">codigo Area Comun</span>
-                  <input type="text" id="codigoAreaComun" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="block text-sm">
-                  <span class="text-gray-700 dark:text-gray-400">codigo Cargo</span>
-                  <input type="text" id="codigoCargo" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="Jane Doe" />
-                </label>
-              </div>
-            </div>
-            <div class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex-row bg-gray-50 dark:bg-gray-800">
-              <button @click="closeModal" type="button" class="w-full px-5 py-3 text-sm font-medium leading-5 text-white text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 sm:px-4 sm:py-2 sm:w-auto active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray" data-dismiss="modal">Cancelar</button>
-              <button type="submit" id="btnGuardar" class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:w-auto sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">Guardar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-      <!-- End of modal backdrop -->
-
-
 </main>
 <?php require_once '../vistas/pie_pagina.php'; ?>
